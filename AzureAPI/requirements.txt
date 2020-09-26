@@ -1,0 +1,3 @@
+flask
+azure-mgmt-compute
+flake8
