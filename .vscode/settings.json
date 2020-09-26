@@ -1,4 +1,4 @@
 {
     "appService.showBuildDuringDeployPrompt": false,
-    "python.pythonPath": "C:\\Python38\\python.exe"
+    "python.pythonPath": "/home/linuxbrew/.linuxbrew/bin/python3"
 }
