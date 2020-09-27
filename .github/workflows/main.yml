@@ -1,4 +1,4 @@
-name: CI
+name: AzureAPI
 
 env:
   container_registry: azureapiflask.azurecr.io
@@ -6,47 +6,38 @@ env:
   resourceGroup: labthree
   appName: azureapiflask2020
 
-# Controls when the action will run. Triggers the workflow on push or pull request events but only for the master branch
-# on - push: any time code pushed to branch then trigger workflow
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on azureapiflask.azurecr.io/azureapi/flask:latest
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
 
-    #login to Az first
-    -  uses: Azure/login@v1
-       with:
-         creds: ${{ secrets.AZURE_CREDENTIALS }}
-         
-    #Cloudshell/PS login to ACR even if logged in to AZ. Same here.
+    - uses: azure/login@v1.1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
     - name: ACR authentication
-      uses: Azure/docker-login@v1
+      uses: azure/docker-login@v1
       with:
         login-server: ${{ env.container_registry }}
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
-    
-    - name: Azure CLI Action
-      uses: Azure/cli@v1.0.0
-      with:
-        inlineScripts: az appservice plan create -g $${{ env.resourceGroup }} -n azureapiplan --is-linux
 
     - name: Azure CLI Action
       uses: Azure/cli@v1.0.0
-      with: az webapp create -g ${{ env.resourceGroup }} -p azureapiplan -n ${{ env.appName }} --runtime "$pytthon|3.6"
-      #-i ${{ env.container_registry_name }}
-      
+      with:
+        inlineScript: az appservice plan create -g ${{ env.resourceGroup }} -n azureapiplan --is-linux
+
+    - name: Azure CLI Action
+      uses: Azure/cli@v1.0.0
+      with:
+        inlineScript: az webapp create -g ${{ env.resourceGroup }} -p azureapiplan -n ${{ env.appName }} -i ${{ env.container_registry_name }}
+    
     - name: Azure WebApp
       uses: Azure/webapps-deploy@v2
       with:
