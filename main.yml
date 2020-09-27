@@ -30,7 +30,7 @@ jobs:
          creds: ${{ secrets.AZURE_CREDENTIALS }}
          
     #Cloudshell/PS login to ACR even if logged in to AZ. Same here.
-    - name: Azure Container Registry Login
+    - name: ACR authentication
       uses: Azure/docker-login@v1
       with:
         login-server: ${{ env.container_registry }}
@@ -45,9 +45,10 @@ jobs:
     - name: Azure CLI Action
       uses: Azure/cli@v1.0.0
       with: az webapp create -g ${{ env.resourceGroup }} -p azureapiplan -n ${{ env.appName }} --runtime "$pytthon|3.6"
-    
+      #-i ${{ env.container_registry_name }}
+      
     - name: Azure WebApp
       users: Azure/webapps-deploy@v2
       with:
-        app-name: azureapiflask2020
+        app-name: ${{ env.appName }}
         images: ${{ env.container_registry_name }}
