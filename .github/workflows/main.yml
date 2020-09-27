@@ -1,10 +1,10 @@
 name: AzureAPI
 
 env:
-  container_registry: azureapiflask.azurecr.io
-  container_registry_name: azureapiflask.azurecr.io/azureapi/flask:latest
-  resourceGroup: labthree
-  appName: azureapiflask2020
+  container_registry: azuredemo.azurecr.io
+  container_registry_name: azuredemo.azurecr.io/azureapi/flask:latest
+  resourceGroup: rg3
+  appName: azureapiflask
 
 on:
   push:
