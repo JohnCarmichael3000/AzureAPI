@@ -1,7 +1,8 @@
 name: CI
 
 env:
-  container_registry: azureapiflask.azurecr.io/azureapi/flask:latest
+  container_registry: azureapiflask.azurecr.io
+  container_registry_name: azureapiflask.azurecr.io/azureapi/flask:latest
   resourceGroup: labthree
   appName: azureapiflask2020
 
@@ -23,10 +24,12 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
 
+    #login to Az first
     -  uses: Azure/login@v1
        with:
          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
+         
+    #Cloudshell/PS login to ACR even if logged in to AZ. Same here.
     - name: Azure Container Registry Login
       uses: Azure/docker-login@v1
       with:
@@ -41,10 +44,10 @@ jobs:
 
     - name: Azure CLI Action
       uses: Azure/cli@v1.0.0
-      with: az webapp create -g ${{ env.resourceGroup }} -p azureapiplan -n ${{ env.appName }} --runtime "$pytthon|3.8"
+      with: az webapp create -g ${{ env.resourceGroup }} -p azureapiplan -n ${{ env.appName }} --runtime "$pytthon|3.6"
     
     - name: Azure WebApp
       users: Azure/webapps-deploy@v2
       with:
         app-name: azureapiflask2020
-        images:
+        images: ${{ env.container_registry_name }}
